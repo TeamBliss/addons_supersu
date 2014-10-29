@@ -79,7 +79,6 @@
 # differently, and it thus being required for the correct result.
 
 OUTFD=$2
-ZIP=$3
 
 ui_print() {
   echo -n -e "ui_print $1\n" > /proc/self/fd/$OUTFD
@@ -104,12 +103,6 @@ ch_con_ext() {
   chcon $2 $1
 }
 
-ui_print "*********************"
-ui_print "SuperSU installer ZIP"
-ui_print "*********************"
-
-ui_print "- Mounting /system, /data and rootfs"
-ui_print "- This was added by remicks as a test"
 mount /system
 mount /data
 mount -o rw,remount /system
@@ -160,14 +153,11 @@ fi
 
 #ui_print "DBG [$API] [$ABI] [$ABI2] [$ABILONG] [$ARCH] [$MKSH]"
 
-ui_print "- Using pre-extracted files"
-ui_print "- This is where it gets tricky"
 cd /tmp/supersu
 
 BIN=/tmp/supersu/$ARCH
 COM=/tmp/supersu/common
 
-ui_print "- Disabling OTA survival"
 chmod 0755 /tmp/supersu/$ARCH/chattr$PIE
 LD_LIBRARY_PATH=/system/lib $BIN/chattr$PIE -i /system/bin/su
 LD_LIBRARY_PATH=/system/lib $BIN/chattr$PIE -i /system/xbin/su
@@ -179,7 +169,6 @@ LD_LIBRARY_PATH=/system/lib $BIN/chattr$PIE -i /system/xbin/supolicy
 LD_LIBRARY_PATH=/system/lib $BIN/chattr$PIE -i /system/etc/install-recovery.sh
 LD_LIBRARY_PATH=/system/lib $BIN/chattr$PIE -i /system/bin/install-recovery.sh
 
-ui_print "- Removing old files"
 rm -f /system/bin/su
 rm -f /system/xbin/su
 rm -f /system/xbin/daemonsu
@@ -238,7 +227,6 @@ rm -f /data/app/com.m0narx.su*
 rm -f /data/app/eu.chainfire.supersu-*
 rm -f /data/app/eu.chainfire.supersu.apk
 
-ui_print "- Creating space"
 cp /system/app/Maps.apk /Maps.apk
 cp /system/app/GMS_Maps.apk /GMS_Maps.apk
 cp /system/app/YouTube.apk /YouTube.apk
@@ -246,7 +234,6 @@ rm /system/app/Maps.apk
 rm /system/app/GMS_Maps.apk
 rm /system/app/YouTube.apk
 
-ui_print "- Placing files"
 mkdir /system/bin/.ext
 cp $BIN/su /system/xbin/daemonsu
 cp $BIN/su /system/xbin/su
@@ -264,7 +251,6 @@ ln -s /system/etc/install-recovery.sh /system/bin/install-recovery.sh
 cp $COM/99SuperSUDaemon /system/etc/init.d/99SuperSUDaemon
 echo 1 > /system/etc/.installed_su_daemon
 
-ui_print "- Restoring files"
 cp /Maps.apk /system/app/Maps.apk
 cp /GMS_Maps.apk /system/app/GMS_Maps.apk
 cp /YouTube.apk /system/app/YouTube.apk
@@ -272,7 +258,6 @@ rm /Maps.apk
 rm /GMS_Maps.apk
 rm /YouTube.apk
 
-ui_print "- Setting permissions"
 set_perm 0 0 0777 /system/bin/.ext
 set_perm 0 0 $SUMOD /system/bin/.ext/.su
 set_perm 0 0 $SUMOD /system/xbin/su
@@ -310,14 +295,10 @@ ch_con /system/app/Maps.apk
 ch_con /system/app/GMS_Maps.apk
 ch_con /system/app/YouTube.apk
 
-ui_print "- Post-installation script"
-ui_print "- Everyone cross your fingers!"
 rm /system/toolbox
 LD_LIBRARY_PATH=/system/lib /system/xbin/su --install
 
-ui_print "- Unmounting /system and /data"
-umount /system
+#umount /system
 umount /data
 
-ui_print "- Done !"
 exit 0
