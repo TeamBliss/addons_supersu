@@ -1,5 +1,10 @@
 #!/sbin/sh
 #
+# THIS SECTION TO BE PRESERVED IN THANKS TO CHAINFIRE
+#
+# THE SCRIPT NEEDS TO BE PLACED AT THE VERY END OF YOUR UPDATER-SCRIPT
+# DIRECTLY BEFORE SYSTEM IS UNMOUNTED!!!
+#
 # SuperSU installer ZIP 
 # Copyright (c) 2012-2014 - Chainfire
 #
@@ -77,6 +82,9 @@
 # The script performs serveral actions in various ways, sometimes
 # multiple times, due to different recoveries and firmwares behaving
 # differently, and it thus being required for the correct result.
+#
+# NOW ON TO THE MAGIC
+#
 
 OUTFD=$2
 
@@ -150,8 +158,6 @@ fi
 if [ ! -f $MKSH ]; then
   MKSH=/system/bin/sh
 fi
-
-#ui_print "DBG [$API] [$ABI] [$ABI2] [$ABILONG] [$ARCH] [$MKSH]"
 
 cd /tmp/supersu
 
@@ -299,6 +305,9 @@ rm /system/toolbox
 LD_LIBRARY_PATH=/system/lib /system/xbin/su --install
 
 #umount /system
+#
+# THIS IS NOT NEEDED AS YOUR SCRIPT SHOULD UNMOUNT SYSTEM AFTER THIS RUNS
+#
 umount /data
 
 exit 0
